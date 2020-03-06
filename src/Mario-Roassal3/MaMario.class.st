@@ -14,6 +14,7 @@ Class {
 { #category : #running }
 MaMario >> createWorld [
 	level := MaWorlds level11.
+	level renderOn: canvas.
 	
 ]
 
@@ -36,4 +37,5 @@ MaMario >> run [
 
 { #category : #running }
 MaMario >> update [
+	level step.
 ]

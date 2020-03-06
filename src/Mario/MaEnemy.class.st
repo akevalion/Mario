@@ -3,6 +3,6 @@ A mario enemy
 "
 Class {
 	#name : #MaEnemy,
-	#superclass : #Object,
+	#superclass : #MaUnit,
 	#category : #'Mario-Core'
 }
