@@ -37,7 +37,7 @@ MaSprite class >> paintFor: source position: position extent: extent [.
 			| img paint |
 			img := self imgFor: source. 
 			paint := AthensCairoPatternSurfacePaint createForSurface: img.
-			paint origin: -8 asPoint + position.
+			paint origin: (extent / -2) - position" -(0.5) ".
 			paint ].
 	
 ]
@@ -62,11 +62,10 @@ MaSprite >> position: aPoint [
 MaSprite >> renderOn: canvas position: point [ 
 	| paint |
 	paint := self class paintFor: source position: position extent: extent.
-
 	canvas add: (RSBox new
 		paint: paint;
 		size: extent;
-		position: point * extent;
+		position: point * 16;
 		yourself)
 ]
 

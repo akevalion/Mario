@@ -28,21 +28,40 @@ MaMario >> createWorld [
 ]
 
 { #category : #running }
+MaMario >> processKeyDown: evt [
+	| char delta |
+	char := evt keyCharacter.
+	delta := -20@0.
+	char == Character arrowLeft ifTrue: [ canvas camera translateBy: delta  ].
+	char == Character arrowRight ifTrue: [ canvas camera translateBy: delta negated ].
+	canvas signalUpdate.
+]
+
+{ #category : #running }
+MaMario >> processKeyUp: evt [
+]
+
+{ #category : #running }
+MaMario >> registerEvents [
+	canvas newAnimation repeat; onStepDo: [ :t | self update ].
+	canvas 
+		when: RSKeyDown do: [ :evt | self processKeyDown: evt ];
+		when: RSKeyDown do: [ :evt | self processKeyUp: evt ];
+		when: RSExtentChangedEvent do: [ :evt | 
+			canvas camera 
+				zoomToFit: canvas extent 
+				rectangle: (-8 asPoint corner: 16@14 *16).
+			canvas signalUpdate  ].
+]
+
+{ #category : #running }
 MaMario >> run [
 	<script: 'self new run'>
 	| w |
 	canvas := RSCanvas new.
-	canvas @ RSCanvasController.
 	canvas attributeAt: #player put: self createMario.
 	self createWorld.
-	canvas newAnimation repeat; onStepDo: [ :t | self update ].
-	canvas when: RSExtentChangedEvent do: [ :evt | 
-		canvas camera 
-			zoomToFit: canvas extent
-			rectangle: (Rectangle 
-				center: canvas camera position 
-				extent: 500@500).
-		canvas signalUpdate  ].
+	self registerEvents.
 	w := canvas open setLabel: 'Mario'.
 	w announcer when: WindowClosed do: [:evt | MaSprite reset ].
 ]
