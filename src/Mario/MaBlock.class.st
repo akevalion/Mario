@@ -1,3 +1,6 @@
+"
+I am a block class for blocks in Mario
+"
 Class {
 	#name : #MaBlock,
 	#superclass : #MaEntity,

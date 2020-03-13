@@ -23,7 +23,15 @@ Class {
 		'qblockSprite',
 		'ublockSprite',
 		'brickSprite',
-		'brickBounceSprite'
+		'brickBounceSprite',
+		'pipeLEndSprite',
+		'pipeREndSprite',
+		'pipeLMidSprite',
+		'pipeRMidSprite',
+		'wallSprite',
+		'flagPoleSprites',
+		'goombaSprite',
+		'koopaSprite'
 	],
 	#category : #'Mario-Core'
 }
@@ -65,8 +73,18 @@ MaLevel >> cloudSprites: aCollection [
 ]
 
 { #category : #accessing }
+MaLevel >> flagPoleSprites: aCollection [ 
+	flagPoleSprites := aCollection
+]
+
+{ #category : #accessing }
 MaLevel >> floorSprite: aMaSprite [ 
 	floorSprite := aMaSprite
+]
+
+{ #category : #'as yet unclassified' }
+MaLevel >> goombaSprite: aMaSprite [ 
+	goombaSprite := aMaSprite
 ]
 
 { #category : #accessing }
@@ -83,6 +101,31 @@ MaLevel >> initialize [
 	enemies := OrderedCollection new.
 	items := OrderedCollection new.
 	pipes := OrderedCollection new.
+]
+
+{ #category : #'as yet unclassified' }
+MaLevel >> koopaSprite: aMaSprite [ 
+	koopaSprite := aMaSprite
+]
+
+{ #category : #accessing }
+MaLevel >> pipeLEndSprite: aMaSprite [ 
+	pipeLEndSprite := aMaSprite
+]
+
+{ #category : #accessing }
+MaLevel >> pipeLMidSprite: aMaSprite [ 
+	pipeLMidSprite := aMaSprite
+]
+
+{ #category : #accessing }
+MaLevel >> pipeREndSprite: aMaSprite [ 
+	pipeREndSprite := aMaSprite
+]
+
+{ #category : #accessing }
+MaLevel >> pipeRMidSprite: aMaSprite [ 
+	pipeRMidSprite := aMaSprite
 ]
 
 { #category : #accessing }
@@ -137,6 +180,15 @@ MaLevel >> putClouds: aCollection [
 		 ]  )
 ]
 
+{ #category : #'scene - interactive' }
+MaLevel >> putFlagpole: x [ 
+	statics add: (MaFloor new position: x@12; sprite: wallSprite).
+	3 to: 11 do: [ :i|
+		scenery add: (MaProp new position: x@i; sprite: flagPoleSprites second) ].
+	scenery add: (MaProp new position: x@2; sprite: flagPoleSprites first).
+	items add: (MaFlag new position: (x-0.5)@3; sprite:flagPoleSprites third ).
+]
+
 { #category : #private }
 MaLevel >> putFloor [
 	| floor |
@@ -149,9 +201,40 @@ MaLevel >> putFloor [
 { #category : #scene }
 MaLevel >> putFloor: aCollection [ 
 	aCollection do: [ :asso |
-		asso key to: asso value do: [ :i |
+		asso key to: asso value -1 do: [ :i |
 			self putFloor position: i@13.
 			self putFloor position: i@14 ] ].
+]
+
+{ #category : #'as yet unclassified' }
+MaLevel >> putGoombas: aCollection [ 
+	aCollection do: [ :pos | enemies add: (MaGoomba new position: pos; sprite: goombaSprite)  ]
+]
+
+{ #category : #'as yet unclassified' }
+MaLevel >> putKoopas: aCollection [ 
+	aCollection do: [ :p | enemies add: (MaKoopa new position: p; sprite: koopaSprite) ]
+]
+
+{ #category : #scene }
+MaLevel >> putPipes: aCollection [ 
+	aCollection do: [ :asso| | x y height |
+		x := asso key x.
+		y := asso key y.
+		height := asso value.
+		(y - height) to: y-1 do: [ :i | 
+			i = (y - height)
+				ifTrue: [
+					statics 
+						add: (MaFloor new position:x@i; sprite: pipeLEndSprite);
+						add: (MaFloor new position: (x+1)@i; sprite: pipeREndSprite). ]
+				ifFalse: [ 
+					statics 
+						add: (MaFloor new position:x@i; sprite: pipeLMidSprite);
+						add: (MaFloor new position: (x+1)@i; sprite: pipeRMidSprite).
+					 ]
+			].
+		 ].
 ]
 
 { #category : #'scene - interactive' }
@@ -167,6 +250,11 @@ MaLevel >> putQBlocks: aCollection [
 			sprite: qblockSprite;
 			usedSprite: ublockSprite)
 		 ]
+]
+
+{ #category : #'scene - interactive' }
+MaLevel >> putQCoinBlocks: aCollection [ 
+	self putQBlocks: (aCollection collect: [ :p | p -> MaCoin new ]).
 ]
 
 { #category : #scene }
@@ -246,6 +334,17 @@ MaLevel >> putTwoClouds: aCollection [
 			yourself). ].
 ]
 
+{ #category : #scene }
+MaLevel >> putWalls: aCollection [ 
+	aCollection do: [ :asso | | x y height |
+		x := asso key x.
+		y := asso key y.
+		height := asso value.
+		y - height to: y -1 do: [ :i | 
+			statics add: (MaFloor new position: x@i; sprite: wallSprite) ].
+		 ]
+]
+
 { #category : #accessing }
 MaLevel >> qblockSprite: aMaSprite [ 
 	qblockSprite := aMaSprite
@@ -257,7 +356,7 @@ MaLevel >> renderOn: canvas [
 	canvas color: background.
 	player := canvas attributeAt: #player.
 	player position: playerPosition.
-	scenery,statics, blocks do: [ :s | s renderOn: canvas ].
+	scenery,statics, blocks, items, enemies do: [ :s | s renderOn: canvas ].
 ]
 
 { #category : #accessing }
@@ -268,4 +367,9 @@ MaLevel >> scrolling: aBool [
 { #category : #stepping }
 MaLevel >> step [
 	"this is the updating process"
+]
+
+{ #category : #accessing }
+MaLevel >> wallSprite: aMaSprite [ 
+	wallSprite := aMaSprite
 ]

@@ -33,5 +33,6 @@ MaEntity >> sprite [
 
 { #category : #accessing }
 MaEntity >> sprite: aMaSprite [
+	aMaSprite ifNil: [ self halt. ].
 	sprite := aMaSprite
 ]
