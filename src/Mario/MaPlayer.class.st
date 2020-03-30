@@ -79,14 +79,15 @@ MaPlayer >> damage [
 
 { #category : #public }
 MaPlayer >> die [
+	noInput := true.
 	self noWalk; noRun; noJump.
 	acc := 0@ acc y.
 	sprite position: 176@32.
 	sprite speed: 0.
-	dying := 2.
+	dying := 40.
 	position y < 15 ifTrue: [ 
 		targetPos := position + (0@ -8).
-		vel := 0@ -5 ]
+		vel := 0@ -5/8 ]
 	ifFalse: [ 
 		targetPos := position + (0@ -1).
 		vel := 0@0 ].
@@ -292,7 +293,7 @@ MaPlayer >> updatePosition: vX dt: dt [
 	self isDying ifTrue: [ 
 		position y < targetPos y 
 			ifTrue: [ vel := vel x @ 1 ].
-		dying := dying - dt.
+		dying := dying -1.
 		dying <= 0 
 			ifTrue: [ loader reload ].
 		
@@ -305,9 +306,9 @@ MaPlayer >> updatePosition: vX dt: dt [
 	exiting ifTrue: [ 
 		left := false.
 		flagging := false.
-		vel := 1.5@0/ 8.
+		vel := 1.5/ 8 @ vel y.
 		position x >= targetPos x
-			ifTrue: [ self die ] ].
+			ifTrue: [ loader reload ] ].
 	vel := vel + acc.
 	position := position + vel.
 ]

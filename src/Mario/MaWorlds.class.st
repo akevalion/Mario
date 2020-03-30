@@ -47,8 +47,10 @@ MaWorlds class >> level11 [
 		pipeLMidSprite: (MaSprite new src: 'tiles.png'; position: 0@144; extent: 16@16);
 		pipeRMidSprite: (MaSprite new src: 'tiles.png'; position: 16@144; extent: 16@16);
 		wallSprite: (MaSprite new src: 'tiles.png'; position: 0@16; extent: 16@16);
-		goombaSprite: (MaSprite new src: 'enemy.png'; position: 0@16; extent: 16@16);
-		koopaSprite: (MaSprite new src: 'enemy.png'; position: 96@0; extent: 16@32);
+		goombaSprite: (MaSprite new src: 'enemy.png'; position: 0@16; 
+			extent: 16@16; speed: 3; frames: #(0 1));
+		koopaSprite: (MaSprite new src: 'enemy.png'; position: 96@0; 
+			extent: 16@32; speed: 2; frames: #(0 1));
 		"scene"
 		putFloor: {0->69. 71->86. 89->153. 155->212};
 		putClouds: { 7@3. 19@2. 56@3. 67@2. 87@2. 103@2. 152@3. 163@2. 200@3 };

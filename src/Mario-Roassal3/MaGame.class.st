@@ -9,7 +9,6 @@ Class {
 		'level',
 		'player',
 		'pressedKeys',
-		'updatables',
 		'dt',
 		'gameTime',
 		'lastTime',
@@ -127,12 +126,16 @@ MaGame >> update [
 	self checkCollisions.
 	canvas signalUpdate.
 	lastTime := now.
+	player position x traceCr.
 ]
 
 { #category : #'update cycle' }
 MaGame >> updateEntities [
-	canvas attributeAt: #vx put: vX.
 	player update: dt vx: vX.
+	player isDying ifTrue: [ ^ self ].
+	
+	canvas attributeAt: #vx put: vX.
+	
 	level updatables do: [ :ent | ent update: dt time: gameTime vx: vX ].
 	player position x > (vX + 5 )
 		ifTrue: [ vX := player position x - 5 ].
