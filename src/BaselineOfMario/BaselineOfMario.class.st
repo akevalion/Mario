@@ -10,7 +10,7 @@ BaselineOfMario >> baseline: spec [
 	spec
 		for: #common
 		do: [
-			spec package: 'Roassal3'with: [ 
+			spec baseline: 'Roassal3'with: [ 
 				spec repository: 'github://ObjectProfile/Roassal3' ].
 			
 			spec 
