@@ -11,10 +11,12 @@ BaselineOfMario >> baseline: spec [
 		for: #common
 		do: [
 			spec package: 'Roassal3'with: [ 
-				spec repository: 'github://ObjectProfile/Roassal3/src' ].
+				spec repository: 'github://ObjectProfile/Roassal3' ].
 			
-			spec package: #'Mario' with: [spec requires: #'Roassal3' ].
-			spec group: 'default' with: #('Mario') ].
+			spec 
+				package: #'Mario' with: [spec requires: #'Roassal3' ];
+				package: #'Mario-Roassal3'.
+			spec group: 'default' with: #('Mario' 'Mario-Roassal3') ].
 
 		
 	

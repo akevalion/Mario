@@ -7,7 +7,10 @@ Class {
 	#instVars : [
 		'source',
 		'position',
-		'extent'
+		'extent',
+		'speed',
+		'index',
+		'frames'
 	],
 	#classVars : [
 		'images',
@@ -54,22 +57,61 @@ MaSprite >> extent: aPoint [
 ]
 
 { #category : #accessing }
+MaSprite >> frames: anArray [
+	frames := anArray
+]
+
+{ #category : #initialization }
+MaSprite >> initialize [
+	super initialize.
+	speed := 0.
+]
+
+{ #category : #accessing }
 MaSprite >> position: aPoint [ 
 	position := aPoint
 ]
 
+{ #category : #accessing }
+MaSprite >> positionX: int [
+	position := int @ position y
+]
+
 { #category : #rendering }
 MaSprite >> renderOn: canvas position: point [ 
-	| paint |
+	| paint box |
 	paint := self class paintFor: source position: position extent: extent.
-	canvas add: (RSBox new
+	canvas add: (box := RSBox new
 		paint: paint;
 		size: extent;
 		position: point * 16;
-		yourself)
+		yourself).
+	^ box
+]
+
+{ #category : #accessing }
+MaSprite >> speed: anInteger [ 
+	speed := anInteger
 ]
 
 { #category : #accessing }
 MaSprite >> src: aString [
 	source := aString
+]
+
+{ #category : #rendering }
+MaSprite >> updateEntity: ent dt: dt [
+	| paint frame |
+	index := speed * dt.
+	speed > 0 ifTrue: [ | max idx |
+		max := frames size.
+		idx := index floor.
+		frame := frames at: (idx % max) + 1.
+	] ifFalse: [ frame := 0 ].
+	paint := self class paintFor: source position: position+(frame*extent x@0) extent: extent.
+	
+	ent box
+		paint: paint;
+		size: extent;
+		position: ent position * 16.
 ]

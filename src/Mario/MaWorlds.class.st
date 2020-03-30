@@ -10,13 +10,16 @@ Class {
 { #category : #levels }
 MaWorlds class >> level11 [
 	^ MaLevel new
-		playerPosition: 56@192;
+		playerPosition: 3.5@12;
+		playerExit: 204;
 		background: '#7974FF';
 		scrolling: true;
 		floorSprite: (MaSprite new src: 'tiles.png'; position: 0@0; extent: 16@16);
 		cloudSprite: (MaSprite new src: 'tiles.png'; position: 0@320; extent: 48@32);
 		bushSprite: (MaSprite new src: 'tiles.png'; position: 176@144; extent: 48@16);
 		brickSprite: (MaSprite new src: 'tiles.png'; position: 16@0; extent: 16@16);
+		brickBounceSprite: (MaSprite new src: 'tiles.png'; position: 32@0; extent: 16@16);
+		ublockSprite: (MaSprite new src: 'tiles.png'; position: 48@0; extent: 16@16);
 		qblockSprite: (MaSprite new src: 'tiles.png'; position: 384@0; extent: 16@16);
 		
 		cloudSprites: { 
@@ -31,7 +34,7 @@ MaWorlds class >> level11 [
 			(MaSprite new src: 'tiles.png'; position: 144@144; extent: 16@16).
 			(MaSprite new src: 'tiles.png'; position: 160@144; extent: 16@16). };
 		bushSprites: { 
-			(MaSprite new src: 'tiles.png'; position: 176@143.5; extent: 16@16).
+			(MaSprite new src: 'tiles.png'; position: 176@143.9999999; extent: 16@16).
 			(MaSprite new src: 'tiles.png'; position: 192@144; extent: 16@16).
 			(MaSprite new src: 'tiles.png'; position: 208@144; extent: 16@16). };
 		flagPoleSprites: { 

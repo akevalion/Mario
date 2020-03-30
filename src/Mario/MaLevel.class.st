@@ -31,7 +31,9 @@ Class {
 		'wallSprite',
 		'flagPoleSprites',
 		'goombaSprite',
-		'koopaSprite'
+		'koopaSprite',
+		'playerExit',
+		'loader'
 	],
 	#category : #'Mario-Core'
 }
@@ -40,6 +42,13 @@ Class {
 MaLevel >> background: aColor [
 	background := aColor 
 	
+]
+
+{ #category : #'public - collide' }
+MaLevel >> blocksAt: aPoint collideWith: aMaPlayer [ 
+	blocks
+		detect: [ :ent | ent position = aPoint ]
+		ifFound: [ :ent | ent collideWith: aMaPlayer ].
 ]
 
 { #category : #accessing }
@@ -73,6 +82,11 @@ MaLevel >> cloudSprites: aCollection [
 ]
 
 { #category : #accessing }
+MaLevel >> enemies [
+	^ enemies
+]
+
+{ #category : #accessing }
 MaLevel >> flagPoleSprites: aCollection [ 
 	flagPoleSprites := aCollection
 ]
@@ -82,9 +96,17 @@ MaLevel >> floorSprite: aMaSprite [
 	floorSprite := aMaSprite
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #enemies }
 MaLevel >> goombaSprite: aMaSprite [ 
 	goombaSprite := aMaSprite
+]
+
+{ #category : #testing }
+MaLevel >> hasStaticAt: aPoint [ 
+	^ statics 
+		detect: [ :ent| ent position = aPoint ]
+		ifFound: [ true ]
+		ifNone: [ false ].
 ]
 
 { #category : #accessing }
@@ -103,7 +125,12 @@ MaLevel >> initialize [
 	pipes := OrderedCollection new.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
+MaLevel >> items [
+	^ items
+]
+
+{ #category : #enemies }
 MaLevel >> koopaSprite: aMaSprite [ 
 	koopaSprite := aMaSprite
 ]
@@ -126,6 +153,21 @@ MaLevel >> pipeREndSprite: aMaSprite [
 { #category : #accessing }
 MaLevel >> pipeRMidSprite: aMaSprite [ 
 	pipeRMidSprite := aMaSprite
+]
+
+{ #category : #accessing }
+MaLevel >> pipes [
+	^ pipes
+]
+
+{ #category : #accessing }
+MaLevel >> playerExit [
+	^ playerExit
+]
+
+{ #category : #accessing }
+MaLevel >> playerExit: anInteger [ 
+	playerExit := anInteger
 ]
 
 { #category : #accessing }
@@ -158,6 +200,7 @@ MaLevel >> putBricks: aCollection [
 		blocks add: (MaBlock new
 			position: pos;
 			item: item;
+			level: self;
 			sprite: brickSprite;
 			bounceSprite: brickBounceSprite;
 			usedSprite: ublockSprite;
@@ -206,12 +249,15 @@ MaLevel >> putFloor: aCollection [
 			self putFloor position: i@14 ] ].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #enemies }
 MaLevel >> putGoombas: aCollection [ 
-	aCollection do: [ :pos | enemies add: (MaGoomba new position: pos; sprite: goombaSprite)  ]
+	aCollection do: [ :pos | 
+		enemies add: (MaGoomba new 
+			position: pos; 
+			sprite: goombaSprite copy)  ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #enemies }
 MaLevel >> putKoopas: aCollection [ 
 	aCollection do: [ :p | enemies add: (MaKoopa new position: p; sprite: koopaSprite) ]
 ]
@@ -246,6 +292,7 @@ MaLevel >> putQBlocks: aCollection [
 			ifFalse: [ pos := p key. item := p value ].
 		blocks add: (MaBlock new
 			position: pos;
+			level: self;
 			item: item;
 			sprite: qblockSprite;
 			usedSprite: ublockSprite)
@@ -350,13 +397,26 @@ MaLevel >> qblockSprite: aMaSprite [
 	qblockSprite := aMaSprite
 ]
 
+{ #category : #removing }
+MaLevel >> removeBlock: aMaBlock [ 
+	blocks remove: aMaBlock.
+	aMaBlock box remove.
+]
+
+{ #category : #'add/remove' }
+MaLevel >> removeEnemy: enemy [
+	enemies remove: enemy.
+	enemy box remove. 
+	
+]
+
 { #category : #rendering }
 MaLevel >> renderOn: canvas [
 	| player |
 	canvas color: background.
 	player := canvas attributeAt: #player.
 	player position: playerPosition.
-	scenery,statics, blocks, items, enemies do: [ :s | s renderOn: canvas ].
+	scenery, blocks, items, enemies,{player}, statics do: [ :s | s renderOn: canvas ].
 ]
 
 { #category : #accessing }
@@ -364,9 +424,21 @@ MaLevel >> scrolling: aBool [
 	scrolling := aBool
 ]
 
-{ #category : #stepping }
-MaLevel >> step [
-	"this is the updating process"
+{ #category : #'public - collide' }
+MaLevel >> staticsAt: aPoint collideWith: aMaPlayer [ 
+	statics
+		detect: [ :ent | ent position = aPoint ]
+		ifFound: [ :ent | ent collideWith: aMaPlayer ].
+]
+
+{ #category : #accessing }
+MaLevel >> ublockSprite: aMaSprite [ 
+	ublockSprite := aMaSprite
+]
+
+{ #category : #accessing }
+MaLevel >> updatables [
+	^ blocks, items, enemies
 ]
 
 { #category : #accessing }
