@@ -311,4 +311,6 @@ MaPlayer >> updatePosition: vX dt: dt [
 			ifTrue: [ loader reload ] ].
 	vel := vel + acc.
 	position := position + vel.
+	
+	position traceCr.
 ]

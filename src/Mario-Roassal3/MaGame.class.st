@@ -29,6 +29,12 @@ MaGame >> checkCollisions [
 	level items, level enemies, level pipes, { player } do: [ :ent | ent checkCollisions ].
 ]
 
+{ #category : #'accessing matrices' }
+MaGame >> getEntitiesMatrix [
+	<script: 'self new getEntitiesMatrix inspect'>
+	^ level get2DMatrix: canvas
+]
+
 { #category : #'update cycle' }
 MaGame >> handleInput [
 	player noInput ifTrue: [ ^ self ].
@@ -46,6 +52,16 @@ MaGame >> handleInput [
 		ifFalse: [(self isDown: #right) 
 			ifTrue: [ player moveRight ]
 			ifFalse: [ player noWalk ] ] 
+]
+
+{ #category : #initialization }
+MaGame >> initialize [
+	| loader |
+	super initialize.
+	canvas := RSCanvas new.
+	loader := MaLoader new game: self.
+	loader load: #level11.
+	self registerEvents.
 ]
 
 { #category : #events }
@@ -92,11 +108,7 @@ MaGame >> reset [
 { #category : #running }
 MaGame >> run [
 	<script: 'self new run'>
-	| w loader |
-	canvas := RSCanvas new.
-	loader := MaLoader new game: self.
-	loader load: #level11.
-	self registerEvents.
+	| w |
 	w := canvas open setLabel: 'Mario'.
 	w announcer when: WindowClosed do: [:evt | MaSprite reset ].
 ]

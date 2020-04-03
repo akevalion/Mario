@@ -96,6 +96,24 @@ MaLevel >> floorSprite: aMaSprite [
 	floorSprite := aMaSprite
 ]
 
+{ #category : #'accessing matrices' }
+MaLevel >> get2DMatrix: canvas [
+	| matrix extent |
+	extent := (canvas encompassingRectangle extent / 16) asIntegerPoint.
+	matrix := Array2D 
+		rows: extent x
+		columns: extent y + 2.
+	enemies, blocks, statics, { canvas attributeAt: #player } do: [ :ent | 
+		| pos |
+		pos := ent position + 1.
+		matrix 
+			at: pos x asInteger
+			at: pos y asInteger
+			put: ent
+		 ].
+	^ matrix
+]
+
 { #category : #enemies }
 MaLevel >> goombaSprite: aMaSprite [ 
 	goombaSprite := aMaSprite
