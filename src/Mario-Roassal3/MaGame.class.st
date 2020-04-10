@@ -12,7 +12,8 @@ Class {
 		'dt',
 		'gameTime',
 		'lastTime',
-		'vX'
+		'vX',
+		'AiIndividual'
 	],
 	#category : #'Mario-Roassal3'
 }
@@ -33,6 +34,16 @@ MaGame >> checkCollisions [
 MaGame >> getEntitiesMatrix [
 	<script: 'self new getEntitiesMatrix inspect'>
 	^ level get2DMatrix: canvas
+]
+
+{ #category : #'transformation matrices' }
+MaGame >> getSimpleEntitiesMatrix [
+	| entitiesMatrix shallowMatrix c |
+	entitiesMatrix := self getEntitiesMatrix.
+	shallowMatrix := entitiesMatrix asArray.
+	c := OrderedCollection new.
+	shallowMatrix do: [ :ent | ent ifNil: [ c add: 0 ] ifNotNil: [c add: ent code] ].
+	^ c.
 ]
 
 { #category : #'update cycle' }
@@ -75,6 +86,11 @@ MaGame >> level: aMaLevel [
 ]
 
 { #category : #accessing }
+MaGame >> player [
+	^ player
+]
+
+{ #category : #accessing }
 MaGame >> player: aMaPlayer [ 
 	player := aMaPlayer
 ]
@@ -111,6 +127,43 @@ MaGame >> run [
 	| w |
 	w := canvas open setLabel: 'Mario'.
 	w announcer when: WindowClosed do: [:evt | MaSprite reset ].
+]
+
+{ #category : #initialization }
+MaGame >> setBinaryInput: aCollection [
+	"Reads a binary input and saves the input in the pressedKeys variable."
+	self assert: (aCollection size) equals: 5.
+	
+	"first position: left button"
+	(aCollection at: 1) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #left put: true ]
+		ifFalse: [ 
+			self pressedKeys at: #left put: false ].
+		"first position: left button"
+	(aCollection at: 2) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #right put: true ]
+		ifFalse: [
+			self pressedKeys at: #right put: false ].
+		"first position: left button"
+	(aCollection at: 3) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #down put: true ]
+		ifFalse: [ 
+			self pressedKeys at: #down put: false ].
+		"first position: left button"
+	(aCollection at: 4) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #jump put: true ]
+		ifFalse: [ 
+			self pressedKeys at: #jump put: false ].
+		"first position: left button"
+	(aCollection at: 5) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #run put: true ]
+		ifFalse: [ 
+			self pressedKeys at: #run put: false ].
 ]
 
 { #category : #events }

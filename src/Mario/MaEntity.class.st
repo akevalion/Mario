@@ -10,7 +10,8 @@ Class {
 		'box',
 		'standing',
 		'vel',
-		'acc'
+		'acc',
+		'code'
 	],
 	#category : #'Mario-Core'
 }
@@ -22,6 +23,11 @@ MaEntity >> box [
 
 { #category : #'as yet unclassified' }
 MaEntity >> bump [
+]
+
+{ #category : #accessing }
+MaEntity >> code [
+	^ code.
 ]
 
 { #category : #initialization }

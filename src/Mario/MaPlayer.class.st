@@ -135,6 +135,7 @@ MaPlayer >> initialize [
 	noInput := false.
 	waiting := 0.
 	self noRun.
+	code := 1.
 ]
 
 { #category : #accessing }

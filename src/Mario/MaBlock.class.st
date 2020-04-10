@@ -46,6 +46,7 @@ MaBlock >> initialize [
 	super initialize.
 	standing := true.
 	vel := 0@0.
+	code := 5.
 ]
 
 { #category : #accessing }
