@@ -46,6 +46,11 @@ MaGame >> getSimpleEntitiesMatrix [
 	^ c.
 ]
 
+{ #category : #'accessing matrices' }
+MaGame >> getVisibleEntities [
+	 ^ level getVisibleEntities: canvas
+]
+
 { #category : #'update cycle' }
 MaGame >> handleInput [
 	player noInput ifTrue: [ ^ self ].
@@ -73,6 +78,7 @@ MaGame >> initialize [
 	loader := MaLoader new game: self.
 	loader load: #level11.
 	self registerEvents.
+	canvas attributeAt: #vx put: vX.
 ]
 
 { #category : #events }
@@ -140,7 +146,7 @@ MaGame >> setBinaryInput: aCollection [
 			self pressedKeys at: #left put: true ]
 		ifFalse: [ 
 			self pressedKeys at: #left put: false ].
-		"first position: left button"
+	"second position: right button"
 	(aCollection at: 2) = 1 
 		ifTrue: [ 
 			self pressedKeys at: #right put: true ]
@@ -152,13 +158,13 @@ MaGame >> setBinaryInput: aCollection [
 			self pressedKeys at: #down put: true ]
 		ifFalse: [ 
 			self pressedKeys at: #down put: false ].
-		"first position: left button"
+	"third position: down button"
 	(aCollection at: 4) = 1 
 		ifTrue: [ 
 			self pressedKeys at: #jump put: true ]
 		ifFalse: [ 
 			self pressedKeys at: #jump put: false ].
-		"first position: left button"
+	"first position: left button"
 	(aCollection at: 5) = 1 
 		ifTrue: [ 
 			self pressedKeys at: #run put: true ]

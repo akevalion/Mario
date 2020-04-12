@@ -101,8 +101,8 @@ MaLevel >> get2DMatrix: canvas [
 	| matrix extent |
 	extent := (canvas encompassingRectangle extent / 16) asIntegerPoint.
 	matrix := Array2D 
-		rows: extent x
-		columns: extent y + 2.
+		rows: extent y + 2
+		columns: extent x.
 	enemies, blocks, statics, { canvas attributeAt: #player } do: [ :ent | 
 		| pos |
 		pos := ent position + 1.
@@ -112,6 +112,17 @@ MaLevel >> get2DMatrix: canvas [
 			put: ent
 		 ].
 	^ matrix
+]
+
+{ #category : #'as yet unclassified' }
+MaLevel >> getVisibleEntities: canvas [
+	| canvasRect |
+	canvasRect := Rectangle 
+		rsCenter: canvas camera position 
+		extent: canvas extent / canvas camera scale.
+	^ enemies, blocks, statics, { canvas attributeAt: #player } select: [ :ent |
+		ent box encompassingRectangle intersects: canvasRect.
+		 ] thenCollect: [ :ent | ent positionInMatrix: ent position - (ent vx @ 0)].
 ]
 
 { #category : #enemies }

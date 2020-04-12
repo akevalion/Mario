@@ -11,7 +11,8 @@ Class {
 		'standing',
 		'vel',
 		'acc',
-		'code'
+		'code',
+		'positionInMatrix'
 	],
 	#category : #'Mario-Core'
 }
@@ -55,6 +56,16 @@ MaEntity >> position [
 { #category : #accessing }
 MaEntity >> position: aPoint [
 	position := aPoint
+]
+
+{ #category : #accessing }
+MaEntity >> positionInMatrix [
+	^ positionInMatrix
+]
+
+{ #category : #accessing }
+MaEntity >> positionInMatrix: aPoint [
+	positionInMatrix := aPoint
 ]
 
 { #category : #accessing }
