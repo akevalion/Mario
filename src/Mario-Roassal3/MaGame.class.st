@@ -49,6 +49,16 @@ MaGame >> getEntityFlatPos: aMaEntity [
 	^ (((pos y)*windowSize*flatPosScalingFactor) + ((pos x)*flatPosScalingFactor) + 1) rounded.
 ]
 
+{ #category : #'as yet unclassified' }
+MaGame >> getRandomBinaryAction [
+	| r p|
+	r := Random new.
+	p := OrderedCollection new.
+	5 timesRepeat: [ p add: 0 ].
+	(r nextInt: 5) timesRepeat: [ p at: (r nextInt: 5) put: 1 ].
+	^ p
+]
+
 { #category : #'transformation matrices' }
 MaGame >> getSimpleEntitiesMatrix [
 	| entitiesMatrix shallowMatrix c |
@@ -68,7 +78,7 @@ MaGame >> getVisibleEntities [
 MaGame >> getVisibleEntitiesAsFixedArray [
 	| result |
 	result := OrderedCollection new.
-	256 timesRepeat: [ result add: 0 ].
+	256 timesRepeat: [ result add: -1 ].
 	self getVisibleEntities do: [ :ent |
 		result at: (self getEntityFlatPos: ent) put: ent code
 		 ].
@@ -163,7 +173,6 @@ MaGame >> run [
 { #category : #initialization }
 MaGame >> setBinaryInput: aCollection [
 	"Reads a binary input and saves the input in the pressedKeys variable."
-	self assert: (aCollection size) equals: 5.
 	
 	"first position: left button"
 	(aCollection at: 1) = 1 
