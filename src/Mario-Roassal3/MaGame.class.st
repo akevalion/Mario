@@ -13,7 +13,8 @@ Class {
 		'gameTime',
 		'lastTime',
 		'vX',
-		'AiIndividual'
+		'AiIndividual',
+		'flatPosScalingFactor'
 	],
 	#category : #'Mario-Roassal3'
 }
@@ -36,6 +37,18 @@ MaGame >> getEntitiesMatrix [
 	^ level get2DMatrix: canvas
 ]
 
+{ #category : #'as yet unclassified' }
+MaGame >> getEntityFlatPos: aMaEntity [
+	| windowSize pos|
+	windowSize := 16.
+	pos := aMaEntity positionInMatrix.
+	
+	"saturation effect"
+	pos y > (windowSize - 1) ifTrue: [ pos setX: (pos x) setY: 15].
+	pos x > (windowSize - 1) ifTrue: [ pos setX: 15 setY: (pos y) ].
+	^ (((pos y)*windowSize*flatPosScalingFactor) + ((pos x)*flatPosScalingFactor) + 1) rounded.
+]
+
 { #category : #'transformation matrices' }
 MaGame >> getSimpleEntitiesMatrix [
 	| entitiesMatrix shallowMatrix c |
@@ -49,6 +62,17 @@ MaGame >> getSimpleEntitiesMatrix [
 { #category : #'accessing matrices' }
 MaGame >> getVisibleEntities [
 	 ^ level getVisibleEntities: canvas
+]
+
+{ #category : #'as yet unclassified' }
+MaGame >> getVisibleEntitiesAsFixedArray [
+	| result |
+	result := OrderedCollection new.
+	256 timesRepeat: [ result add: 0 ].
+	self getVisibleEntities do: [ :ent |
+		result at: (self getEntityFlatPos: ent) put: ent code
+		 ].
+	^ result
 ]
 
 { #category : #'update cycle' }
@@ -79,6 +103,7 @@ MaGame >> initialize [
 	loader load: #level11.
 	self registerEvents.
 	canvas attributeAt: #vx put: vX.
+	flatPosScalingFactor := 1.
 ]
 
 { #category : #events }
