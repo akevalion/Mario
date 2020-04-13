@@ -231,7 +231,7 @@ MaGame >> update [
 	self checkCollisions.
 	canvas signalUpdate.
 	lastTime := now.
-	player position x traceCr.
+	"player position x traceCr."
 ]
 
 { #category : #'update cycle' }
