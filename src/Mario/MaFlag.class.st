@@ -28,7 +28,7 @@ MaFlag >> initialize [
 	hit := false.
 	done := false.
 	vel := 0@0.
-	code := 0.
+	code := 7.
 ]
 
 { #category : #'update cycle' }

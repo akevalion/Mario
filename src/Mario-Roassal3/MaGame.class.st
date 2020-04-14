@@ -78,9 +78,9 @@ MaGame >> getVisibleEntities [
 MaGame >> getVisibleEntitiesAsFixedArray [
 	| result |
 	result := OrderedCollection new.
-	256 timesRepeat: [ result add: -1 ].
+	256 timesRepeat: [ result add: 0 ].
 	self getVisibleEntities do: [ :ent |
-		result at: (self getEntityFlatPos: ent) put: ent code
+		result at: (self getEntityFlatPos: ent) put: (ent code / 7 asFloat)
 		 ].
 	^ result
 ]
@@ -124,6 +124,15 @@ MaGame >> isDown: key [
 { #category : #accessing }
 MaGame >> level: aMaLevel [ 
 	level := aMaLevel
+]
+
+{ #category : #'as yet unclassified' }
+MaGame >> playBinaryInput: aCollection [ 
+	"Reads a binary input and saves the input in the pressedKeys variable."
+    self setBinaryInput: aCollection.
+    10 timesRepeat: [ self update ].
+    self setBinaryInput: #(0 0 0 0 0).
+
 ]
 
 { #category : #accessing }
