@@ -115,14 +115,14 @@ MaGame >> run [
 
 { #category : #events }
 MaGame >> setInput: evt with: status [
-	| value key |
-	value := evt keyValue.
+	| name key |
+	name := evt keyName.
 	key := nil.
-	(value = 28 or: [value = 123]) ifTrue: [ key := #left ].
-	(value = 29 or: [ value = 124 ]) ifTrue: [ key := #right ].
-	(value = 31 or: [ value = 125 ]) ifTrue: [ key := #down ].
-	(value = 122 or: [ value = 6 ]) ifTrue: [ key := #run ]. "z"
-	(value = 120 or: [ value = 7 ])  ifTrue: [ key := #jump ]."x"
+	name = #KP_LEFT ifTrue: [ key := #left ].
+	name = #KP_RIGHT ifTrue: [ key := #right ].
+	name = #KP_DOWN ifTrue: [ key := #down ].
+	name = #Z ifTrue: [ key := #run ]. "z"
+	name = #X ifTrue: [ key := #jump ]."x"
 	key ifNil: [ ^ self "evt keyValue traceCr" ].
 	self pressedKeys at: key put: status.
 	"self pressedKeys traceCr."
@@ -138,7 +138,6 @@ MaGame >> update [
 	self checkCollisions.
 	canvas signalUpdate.
 	lastTime := now.
-	player position x traceCr.
 ]
 
 { #category : #'update cycle' }
