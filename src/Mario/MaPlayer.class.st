@@ -135,6 +135,7 @@ MaPlayer >> initialize [
 	noInput := false.
 	waiting := 0.
 	self noRun.
+	code := 1.
 ]
 
 { #category : #accessing }
@@ -311,6 +312,4 @@ MaPlayer >> updatePosition: vX dt: dt [
 			ifTrue: [ loader reload ] ].
 	vel := vel + acc.
 	position := position + vel.
-	
-	position traceCr.
 ]

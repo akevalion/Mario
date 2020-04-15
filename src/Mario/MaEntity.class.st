@@ -10,7 +10,9 @@ Class {
 		'box',
 		'standing',
 		'vel',
-		'acc'
+		'acc',
+		'code',
+		'positionInMatrix'
 	],
 	#category : #'Mario-Core'
 }
@@ -22,6 +24,11 @@ MaEntity >> box [
 
 { #category : #'as yet unclassified' }
 MaEntity >> bump [
+]
+
+{ #category : #accessing }
+MaEntity >> code [
+	^ code.
 ]
 
 { #category : #initialization }
@@ -49,6 +56,16 @@ MaEntity >> position [
 { #category : #accessing }
 MaEntity >> position: aPoint [
 	position := aPoint
+]
+
+{ #category : #accessing }
+MaEntity >> positionInMatrix [
+	^ positionInMatrix
+]
+
+{ #category : #accessing }
+MaEntity >> positionInMatrix: aPoint [
+	positionInMatrix := aPoint
 ]
 
 { #category : #accessing }

@@ -41,3 +41,9 @@ MaFloor >> collideWith: ent [
 			ent jumping: 0. ]
 		ifFalse: [ ent collideWall: self ] ]
 ]
+
+{ #category : #initialization }
+MaFloor >> initialize [
+	super initialize.
+	code := 4.
+]

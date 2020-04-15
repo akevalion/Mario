@@ -12,7 +12,9 @@ Class {
 		'dt',
 		'gameTime',
 		'lastTime',
-		'vX'
+		'vX',
+		'AiIndividual',
+		'flatPosScalingFactor'
 	],
 	#category : #'Mario-Roassal3'
 }
@@ -33,6 +35,54 @@ MaGame >> checkCollisions [
 MaGame >> getEntitiesMatrix [
 	<script: 'self new getEntitiesMatrix inspect'>
 	^ level get2DMatrix: canvas
+]
+
+{ #category : #'as yet unclassified' }
+MaGame >> getEntityFlatPos: aMaEntity [
+	| windowSize pos|
+	windowSize := 16.
+	pos := aMaEntity positionInMatrix.
+	
+	"saturation effect"
+	pos y > (windowSize - 1) ifTrue: [ pos setX: (pos x) setY: 15].
+	pos x > (windowSize - 1) ifTrue: [ pos setX: 15 setY: (pos y) ].
+	^ (((pos y)*windowSize*flatPosScalingFactor) + ((pos x)*flatPosScalingFactor) + 1) rounded.
+]
+
+{ #category : #'as yet unclassified' }
+MaGame >> getRandomBinaryAction [
+	| r p|
+	r := Random new.
+	p := OrderedCollection new.
+	5 timesRepeat: [ p add: 0 ].
+	(r nextInt: 5) timesRepeat: [ p at: (r nextInt: 5) put: 1 ].
+	^ p
+]
+
+{ #category : #'transformation matrices' }
+MaGame >> getSimpleEntitiesMatrix [
+	| entitiesMatrix shallowMatrix c |
+	entitiesMatrix := self getEntitiesMatrix.
+	shallowMatrix := entitiesMatrix asArray.
+	c := OrderedCollection new.
+	shallowMatrix do: [ :ent | ent ifNil: [ c add: 0 ] ifNotNil: [c add: ent code] ].
+	^ c.
+]
+
+{ #category : #'accessing matrices' }
+MaGame >> getVisibleEntities [
+	 ^ level getVisibleEntities: canvas
+]
+
+{ #category : #'as yet unclassified' }
+MaGame >> getVisibleEntitiesAsFixedArray [
+	| result |
+	result := OrderedCollection new.
+	256 timesRepeat: [ result add: 0 ].
+	self getVisibleEntities do: [ :ent |
+		result at: (self getEntityFlatPos: ent) put: (ent code / 7 asFloat)
+		 ].
+	^ result
 ]
 
 { #category : #'update cycle' }
@@ -62,6 +112,8 @@ MaGame >> initialize [
 	loader := MaLoader new game: self.
 	loader load: #level11.
 	self registerEvents.
+	canvas attributeAt: #vx put: vX.
+	flatPosScalingFactor := 1.
 ]
 
 { #category : #events }
@@ -72,6 +124,20 @@ MaGame >> isDown: key [
 { #category : #accessing }
 MaGame >> level: aMaLevel [ 
 	level := aMaLevel
+]
+
+{ #category : #'as yet unclassified' }
+MaGame >> playBinaryInput: aCollection [ 
+	"Reads a binary input and saves the input in the pressedKeys variable."
+    self setBinaryInput: aCollection.
+    10 timesRepeat: [ self update ].
+    self setBinaryInput: #(0 0 0 0 0).
+
+]
+
+{ #category : #accessing }
+MaGame >> player [
+	^ player
 ]
 
 { #category : #accessing }
@@ -111,6 +177,42 @@ MaGame >> run [
 	| w |
 	w := canvas open setLabel: 'Mario'.
 	w announcer when: WindowClosed do: [:evt | MaSprite reset ].
+]
+
+{ #category : #initialization }
+MaGame >> setBinaryInput: aCollection [
+	"Reads a binary input and saves the input in the pressedKeys variable."
+	
+	"first position: left button"
+	(aCollection at: 1) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #left put: true ]
+		ifFalse: [ 
+			self pressedKeys at: #left put: false ].
+	"second position: right button"
+	(aCollection at: 2) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #right put: true ]
+		ifFalse: [
+			self pressedKeys at: #right put: false ].
+		"first position: left button"
+	(aCollection at: 3) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #down put: true ]
+		ifFalse: [ 
+			self pressedKeys at: #down put: false ].
+	"third position: down button"
+	(aCollection at: 4) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #jump put: true ]
+		ifFalse: [ 
+			self pressedKeys at: #jump put: false ].
+	"first position: left button"
+	(aCollection at: 5) = 1 
+		ifTrue: [ 
+			self pressedKeys at: #run put: true ]
+		ifFalse: [ 
+			self pressedKeys at: #run put: false ].
 ]
 
 { #category : #events }

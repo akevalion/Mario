@@ -11,6 +11,12 @@ Class {
 MaKoopa >> checkCollisions [
 ]
 
+{ #category : #initialization }
+MaKoopa >> initialize [
+	super initialize.
+	code := 2.
+]
+
 { #category : #'update cycle' }
 MaKoopa >> update: dt time: gameTime vx: vx [
 ]

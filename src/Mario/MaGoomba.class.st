@@ -65,6 +65,7 @@ MaGoomba >> initialize [
 	dying := 0.
 	flipping := false.
 	vel := -0.5@0/8.
+	code := 3.
 ]
 
 { #category : #public }
