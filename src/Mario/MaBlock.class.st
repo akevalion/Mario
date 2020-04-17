@@ -72,8 +72,7 @@ MaBlock >> update: dt time: gameTime vx: vx [
 			standing := true ]
 	] ifFalse: [ 
 		sprite == usedSprite ifTrue: [
-			level putFloor
-				position: position;
+			(level putFloorIn: position)
 				sprite: usedSprite;
 				renderOn: box canvas.
 			

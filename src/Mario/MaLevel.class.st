@@ -46,9 +46,9 @@ MaLevel >> background: aColor [
 
 { #category : #'public - collide' }
 MaLevel >> blocksAt: aPoint collideWith: aMaPlayer [ 
-	blocks
-		detect: [ :ent | ent position = aPoint ]
-		ifFound: [ :ent | ent collideWith: aMaPlayer ].
+	blocks 
+		at: aPoint
+		ifPresent: [ :ent | ent collideWith: aMaPlayer ]
 ]
 
 { #category : #accessing }
@@ -114,7 +114,7 @@ MaLevel >> get2DMatrix: canvas [
 	^ matrix
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'accessing matrices' }
 MaLevel >> getVisibleEntities: canvas [
 	| canvasRect |
 	canvasRect := Rectangle 
@@ -146,12 +146,13 @@ MaLevel >> hillSprites: aCollection [
 { #category : #initialization }
 MaLevel >> initialize [
 	super initialize.
-	statics := OrderedCollection new.
 	scenery := OrderedCollection new.
-	blocks := OrderedCollection new.
-	enemies := OrderedCollection new.
 	items := OrderedCollection new.
-	pipes := OrderedCollection new.
+	enemies := OrderedCollection new.
+	
+	statics := Dictionary new.
+	blocks := Dictionary new.
+	pipes := Dictionary new.
 ]
 
 { #category : #accessing }
@@ -207,15 +208,15 @@ MaLevel >> playerPosition: aPoint [
 { #category : #scene }
 MaLevel >> putBigHills: aCollection [
 	aCollection do: [ :p |
-		scenery add: (MaProp new sprite: hillSprites first; position: p).
-		scenery add: (MaProp new sprite: hillSprites fourth; position: 1@0+p).	
-		scenery add: (MaProp new sprite: hillSprites first; position: 1@ -1 +p).	
-		scenery add: (MaProp new sprite: hillSprites fifth; position: 2@0 +p).
-		scenery add: (MaProp new sprite: hillSprites fourth; position: 2@ -1+p).
-		scenery add: (MaProp new sprite: hillSprites second; position: 2@ -2+p).
-		scenery add: (MaProp new sprite: hillSprites sixth; position: 3@0+p).
-		scenery add: (MaProp new sprite: hillSprites third; position: 3@ -1+p).
-		scenery add: (MaProp new sprite: hillSprites third; position: 4@ 0+p).
+		self sceneryAdd:  (MaProp new sprite: hillSprites first; position: p).
+		self sceneryAdd:  (MaProp new sprite: hillSprites fourth; position: 1@0+p).	
+		self sceneryAdd:  (MaProp new sprite: hillSprites first; position: 1@ -1 +p).	
+		self sceneryAdd:  (MaProp new sprite: hillSprites fifth; position: 2@0 +p).
+		self sceneryAdd:  (MaProp new sprite: hillSprites fourth; position: 2@ -1+p).
+		self sceneryAdd:  (MaProp new sprite: hillSprites second; position: 2@ -2+p).
+		self sceneryAdd:  (MaProp new sprite: hillSprites sixth; position: 3@0+p).
+		self sceneryAdd:  (MaProp new sprite: hillSprites third; position: 3@ -1+p).
+		self sceneryAdd:  (MaProp new sprite: hillSprites third; position: 4@ 0+p).
 		 ].
 ]
 
@@ -226,7 +227,7 @@ MaLevel >> putBricks: aCollection [
 		p isPoint
 			ifTrue: [ pos := p. item := nil ]
 			ifFalse: [ pos := p key. item := p value ].
-		blocks add: (MaBlock new
+		blocks at: pos put: (MaBlock new
 			position: pos;
 			item: item;
 			level: self;
@@ -254,28 +255,30 @@ MaLevel >> putClouds: aCollection [
 
 { #category : #'scene - interactive' }
 MaLevel >> putFlagpole: x [ 
-	statics add: (MaFloor new position: x@12; sprite: wallSprite).
+	statics at: x@12 put: (MaFloor new position: x@12; sprite: wallSprite).
 	3 to: 11 do: [ :i|
 		scenery add: (MaProp new position: x@i; sprite: flagPoleSprites second) ].
 	scenery add: (MaProp new position: x@2; sprite: flagPoleSprites first).
 	items add: (MaFlag new position: (x-0.5)@3; sprite:flagPoleSprites third ).
 ]
 
-{ #category : #private }
-MaLevel >> putFloor [
-	| floor |
-	floor := MaFloor new
-		sprite: floorSprite.
-	statics add: floor.
-	^ floor
-]
-
 { #category : #scene }
 MaLevel >> putFloor: aCollection [ 
 	aCollection do: [ :asso |
 		asso key to: asso value -1 do: [ :i |
-			self putFloor position: i@13.
-			self putFloor position: i@14 ] ].
+			self putFloorIn: i@13.
+			self putFloorIn: i@14 ] ].
+]
+
+{ #category : #private }
+MaLevel >> putFloorIn: position [
+	| floor |
+	floor := MaFloor new
+		sprite: floorSprite;
+		position: position;
+		yourself.
+	statics at: position put: floor.
+	^ floor
 ]
 
 { #category : #enemies }
@@ -301,12 +304,12 @@ MaLevel >> putPipes: aCollection [
 			i = (y - height)
 				ifTrue: [
 					statics 
-						add: (MaFloor new position:x@i; sprite: pipeLEndSprite);
-						add: (MaFloor new position: (x+1)@i; sprite: pipeREndSprite). ]
+						at: x@i put:(MaFloor new position:x@i; sprite: pipeLEndSprite);
+						at: (x+1)@i put: (MaFloor new position: (x+1)@i; sprite: pipeREndSprite) ]
 				ifFalse: [ 
 					statics 
-						add: (MaFloor new position:x@i; sprite: pipeLMidSprite);
-						add: (MaFloor new position: (x+1)@i; sprite: pipeRMidSprite).
+						at: x@i put: (MaFloor new position:x@i; sprite: pipeLMidSprite);
+						at: (x+1)@i put: (MaFloor new position: (x+1)@i; sprite: pipeRMidSprite).
 					 ]
 			].
 		 ].
@@ -319,7 +322,7 @@ MaLevel >> putQBlocks: aCollection [
 		p isPoint
 			ifTrue: [ pos := p. item := nil ]
 			ifFalse: [ pos := p key. item := p value ].
-		blocks add: (MaBlock new
+		blocks at: pos put: (MaBlock new
 			position: pos;
 			level: self;
 			item: item;
@@ -336,10 +339,10 @@ MaLevel >> putQCoinBlocks: aCollection [
 { #category : #scene }
 MaLevel >> putSmallHills: aCollection [
 	aCollection do: [ :p |
-		scenery add: (MaProp new sprite: hillSprites first; position: p).
-		scenery add: (MaProp new sprite: hillSprites fourth; position: 1@0+p).	
-		scenery add: (MaProp new sprite: hillSprites second; position: 1@ -1 +p).	
-		scenery add: (MaProp new sprite: hillSprites third; position: 2@0 +p).
+		self sceneryAdd: (MaProp new sprite: hillSprites first; position: p).
+		self sceneryAdd: (MaProp new sprite: hillSprites fourth; position: 1@0+p).	
+		self sceneryAdd: (MaProp new sprite: hillSprites second; position: 1@ -1 +p).	
+		self sceneryAdd: (MaProp new sprite: hillSprites third; position: 2@0 +p).
 		 ].
 ]
 
@@ -357,23 +360,23 @@ MaLevel >> putThreeBushes: aCollection [
 { #category : #scene }
 MaLevel >> putThreeClouds: aCollection [ 
 	aCollection do: [ :p | 
-		scenery add: (MaProp new
+		self sceneryAdd: (MaProp new
 			sprite: cloudSprites first;
 			position: p;
 			yourself).
-		scenery add: (MaProp new
+		self sceneryAdd: (MaProp new
 			sprite: cloudSprites second;
 			position: 1@0 + p;
 			yourself).
-		scenery add: (MaProp new
+		self sceneryAdd: (MaProp new
 			sprite: cloudSprites second;
 			position: 2@0 + p;
 			yourself).
-		scenery add: (MaProp new
+		self sceneryAdd: (MaProp new
 			sprite: cloudSprites second;
 			position: 3@0 + p;
 			yourself).
-		scenery add: (MaProp new
+		self sceneryAdd: (MaProp new
 			sprite: cloudSprites third;
 			position: 4@0 + p;
 			yourself). ].
@@ -392,19 +395,19 @@ MaLevel >> putTwoBushes: aCollection [
 { #category : #scene }
 MaLevel >> putTwoClouds: aCollection [ 
 	aCollection do: [ :p | 
-		scenery add: (MaProp new
+		self sceneryAdd: (MaProp new
 			sprite: cloudSprites first;
 			position: p;
 			yourself).
-		scenery add: (MaProp new
+		self sceneryAdd: (MaProp new
 			sprite: cloudSprites second;
 			position: 1@0 + p;
 			yourself).
-		scenery add: (MaProp new
+		self sceneryAdd: (MaProp new
 			sprite: cloudSprites second;
 			position: 2@0 + p;
 			yourself).
-		scenery add: (MaProp new
+		self sceneryAdd: (MaProp new
 			sprite: cloudSprites third;
 			position: 3@0 + p;
 			yourself). ].
@@ -417,7 +420,7 @@ MaLevel >> putWalls: aCollection [
 		y := asso key y.
 		height := asso value.
 		y - height to: y -1 do: [ :i | 
-			statics add: (MaFloor new position: x@i; sprite: wallSprite) ].
+			statics at: x@i put: (MaFloor new position: x@i; sprite: wallSprite) ].
 		 ]
 ]
 
@@ -428,7 +431,7 @@ MaLevel >> qblockSprite: aMaSprite [
 
 { #category : #removing }
 MaLevel >> removeBlock: aMaBlock [ 
-	blocks remove: aMaBlock.
+	blocks removeKey: aMaBlock position.
 	aMaBlock box remove.
 ]
 
@@ -445,7 +448,13 @@ MaLevel >> renderOn: canvas [
 	canvas color: background.
 	player := canvas propertyAt: #player.
 	player position: playerPosition.
-	scenery, blocks, items, enemies,{player}, statics do: [ :s | s renderOn: canvas ].
+	scenery, blocks values, statics values, items, enemies,{player}
+		do: [ :s | s renderOn: canvas ].
+]
+
+{ #category : #private }
+MaLevel >> sceneryAdd: entity [ 
+	scenery add: entity
 ]
 
 { #category : #accessing }
@@ -456,8 +465,9 @@ MaLevel >> scrolling: aBool [
 { #category : #'public - collide' }
 MaLevel >> staticsAt: aPoint collideWith: aMaPlayer [ 
 	statics
-		detect: [ :ent | ent position = aPoint ]
-		ifFound: [ :ent | ent collideWith: aMaPlayer ].
+		at: aPoint
+		ifPresent: [ :ent | ent collideWith: aMaPlayer ].
+
 ]
 
 { #category : #accessing }
@@ -467,7 +477,7 @@ MaLevel >> ublockSprite: aMaSprite [
 
 { #category : #accessing }
 MaLevel >> updatables [
-	^ blocks, items, enemies
+	^ blocks values, items, enemies
 ]
 
 { #category : #accessing }

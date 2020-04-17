@@ -176,6 +176,7 @@ MaGame >> run [
 	<script: 'self new run'>
 	| w |
 	w := canvas open setLabel: 'Mario'.
+	canvas @ RSSimpleCanvasMonitor.
 	w announcer when: WindowClosed do: [:evt | MaSprite reset ].
 ]
 
