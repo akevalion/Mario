@@ -112,7 +112,7 @@ MaGame >> initialize [
 	loader := MaLoader new game: self.
 	loader load: #level11.
 	self registerEvents.
-	canvas attributeAt: #vx put: vX.
+	canvas propertyAt: #vx put: vX.
 	flatPosScalingFactor := 1.
 ]
 
@@ -247,7 +247,7 @@ MaGame >> updateEntities [
 	player update: dt vx: vX.
 	player isDying ifTrue: [ ^ self ].
 	
-	canvas attributeAt: #vx put: vX.
+	canvas propertyAt: #vx put: vX.
 	
 	level updatables do: [ :ent | ent update: dt time: gameTime vx: vX ].
 	player position x > (vX + 5 )

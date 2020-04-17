@@ -18,8 +18,8 @@ MaFloor >> collideWith: ent [
 	com2 := ent box encompassingRectangle.
 	(com1 intersects: com2) ifFalse: [ ^ self ].
 	standing ifFalse: [ ent bump ]. 
-	c1 := com1 rsCenter.
-	c2 := com2 rsCenter.
+	c1 := com1 floatCenter.
+	c2 := com2 floatCenter.
 	signal := ent vel y < 0 ifTrue: -1 ifFalse: 1.
 	(com2 bottom - com1 top) abs <= (16 * signal) ifTrue: [ 
 		(self level

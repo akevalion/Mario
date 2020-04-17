@@ -45,7 +45,7 @@ MaEntity >> level [
 
 { #category : #accessing }
 MaEntity >> player [
-	^ box canvas attributeAt: #player
+	^ box canvas propertyAt: #player
 ]
 
 { #category : #accessing }
@@ -106,5 +106,5 @@ MaEntity >> velY: anInteger [
 
 { #category : #accessing }
 MaEntity >> vx [
-	^ box canvas attributeAt: #vx
+	^ box canvas propertyAt: #vx
 ]

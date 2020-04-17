@@ -47,7 +47,7 @@ MaLoader >> reload [
 	| player level |
 	game canvas shapes removeAll.
 	player := self createMario.
-	game canvas attributeAt: #player put: player.
+	game canvas propertyAt: #player put: player.
 	level := self createWorld.
 	player level: level.
 	game 

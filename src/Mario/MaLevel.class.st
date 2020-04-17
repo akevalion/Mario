@@ -103,7 +103,7 @@ MaLevel >> get2DMatrix: canvas [
 	matrix := Array2D 
 		rows: extent y + 2
 		columns: extent x.
-	enemies, blocks, statics, { canvas attributeAt: #player } do: [ :ent | 
+	enemies, blocks, statics, { canvas propertyAt: #player } do: [ :ent | 
 		| pos |
 		pos := ent position + 1.
 		matrix 
@@ -118,9 +118,9 @@ MaLevel >> get2DMatrix: canvas [
 MaLevel >> getVisibleEntities: canvas [
 	| canvasRect |
 	canvasRect := Rectangle 
-		rsCenter: canvas camera position 
+		floatCenter: canvas camera position 
 		extent: canvas extent / canvas camera scale.
-	^ enemies, blocks, statics, { canvas attributeAt: #player } select: [ :ent |
+	^ enemies, blocks, statics, { canvas propertyAt: #player } select: [ :ent |
 		ent box encompassingRectangle intersects: canvasRect.
 		 ] thenCollect: [ :ent | ent positionInMatrix: ent position - (ent vx @ 0)].
 ]
@@ -443,7 +443,7 @@ MaLevel >> removeEnemy: enemy [
 MaLevel >> renderOn: canvas [
 	| player |
 	canvas color: background.
-	player := canvas attributeAt: #player.
+	player := canvas propertyAt: #player.
 	player position: playerPosition.
 	scenery, blocks, items, enemies,{player}, statics do: [ :s | s renderOn: canvas ].
 ]
