@@ -14,10 +14,22 @@ Class {
 		'lastTime',
 		'vX',
 		'AiIndividual',
-		'flatPosScalingFactor'
+		'flatPosScalingFactor',
+		'gameIter',
+		'gameIterLabel',
+		'hasIter'
 	],
 	#category : #'Mario-Roassal3'
 }
+
+{ #category : #'as yet unclassified' }
+MaGame >> activateIter [
+	hasIter := true.
+	gameIter := 0.
+	gameIterLabel := RSLabel new.
+	canvas addFixedShape: gameIterLabel.
+	
+]
 
 { #category : #accessing }
 MaGame >> canvas [
@@ -113,6 +125,7 @@ MaGame >> initialize [
 	loader load: #level11.
 	self registerEvents.
 	canvas propertyAt: #vx put: vX.
+	hasIter := false.
 	flatPosScalingFactor := 1.
 ]
 
@@ -167,8 +180,8 @@ MaGame >> registerEvents [
 MaGame >> reset [
 	gameTime := 0.
 	vX := 0.
+	gameIter := 0.
 	lastTime := Time microsecondClockValue.
-	
 ]
 
 { #category : #running }
@@ -249,6 +262,12 @@ MaGame >> updateEntities [
 	player isDying ifTrue: [ ^ self ].
 	
 	canvas propertyAt: #vx put: vX.
+	
+	"updates the iteration number"
+	hasIter ifTrue: [ 
+		gameIterLabel text: gameIter ; position: (32 @ 16).
+		gameIter := gameIter + 1. 
+	].
 	
 	level updatables do: [ :ent | ent update: dt time: gameTime vx: vX ].
 	player position x > (vX + 5 )
