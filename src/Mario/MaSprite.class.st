@@ -24,9 +24,10 @@ MaSprite class >> imgFor: aString [
 	images ifNil: [ images := Dictionary new ].
 	^ images 
 		at: aString
-		ifAbsentPut: [ | img |
+		ifAbsentPut: [ | img folder |
+			folder := (IceRepository repositories detect: [ :each | each name = 'Mario' ]) repositoryDirectory.
 			img := ImageReadWriter 
-				formFromFileNamed: 'pharo-local/iceberg/akevalion/Mario/sprites/', aString.
+				formFromFileNamed: folder / 'sprites'/ aString.
 			img := AthensCairoSurface fromForm: img. ]
 	
 ]

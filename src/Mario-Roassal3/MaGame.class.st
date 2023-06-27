@@ -165,15 +165,23 @@ MaGame >> pressedKeys [
 
 { #category : #events }
 MaGame >> registerEvents [
-	canvas newAnimation repeat; onStepDo: [ :t | self update ].
-	canvas 
-		when: RSKeyDown do: [ :evt | self setInput: evt with: true ];
-		when: RSKeyUp do: [ :evt | self setInput: evt  with: false ];
-		when: RSExtentChangedEvent do: [ :evt | 
-			canvas camera 
-				zoomToFit: canvas extent 
-				rectangle: (-8 asPoint corner: 16@14 *16).
-			canvas signalUpdate  ].
+
+	canvas newAnimation
+		repeat;
+		onStepDo: [ :t | self update ].
+	canvas
+		when: RSKeyDown
+		do: [ :evt | self setInput: evt with: true ]
+		for: self;
+		when: RSKeyUp
+		do: [ :evt | self setInput: evt with: false ]
+		for: self;
+		when: RSExtentChangedEvent do: [ :evt |
+			canvas camera
+				zoomToFit: canvas extent
+				rectangle: (-8 asPoint corner: 16 @ 14 * 16).
+			canvas signalUpdate ]
+		for: self
 ]
 
 { #category : #public }
@@ -186,11 +194,14 @@ MaGame >> reset [
 
 { #category : #running }
 MaGame >> run [
+
 	<script: 'self new run'>
 	| w |
 	w := canvas open setLabel: 'Mario'.
-	canvas @ RSSimpleCanvasMonitor.
-	w announcer when: WindowClosed do: [:evt | MaSprite reset ].
+	w announcer
+		when: WindowClosed
+		do: [ :evt | MaSprite reset ]
+		for: self
 ]
 
 { #category : #initialization }
@@ -233,10 +244,11 @@ MaGame >> setBinaryInput: aCollection [
 MaGame >> setInput: evt with: status [
 	| name key |
 	name := evt keyName.
+	name traceCr.
 	key := nil.
-	name = #KP_LEFT ifTrue: [ key := #left ].
-	name = #KP_RIGHT ifTrue: [ key := #right ].
-	name = #KP_DOWN ifTrue: [ key := #down ].
+	name = #LEFT ifTrue: [ key := #left ].
+	name = #RIGHT ifTrue: [ key := #right ].
+	name = #DOWN ifTrue: [ key := #down ].
 	name = #Z ifTrue: [ key := #run ]. "z"
 	name = #X ifTrue: [ key := #jump ]."x"
 	key ifNil: [ ^ self "evt keyValue traceCr" ].
