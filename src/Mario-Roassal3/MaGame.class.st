@@ -56,9 +56,9 @@ MaGame >> getEntityFlatPos: aMaEntity [
 	pos := aMaEntity positionInMatrix.
 	
 	"saturation effect"
-	pos y > (windowSize - 1) ifTrue: [ pos setX: (pos x) setY: 15].
-	pos x > (windowSize - 1) ifTrue: [ pos setX: 15 setY: (pos y) ].
-	^ (((pos y)*windowSize*flatPosScalingFactor) + ((pos x)*flatPosScalingFactor) + 1) rounded.
+	pos y > (windowSize - 1) ifTrue: [ pos setX: pos x setY: 15].
+	pos x > (windowSize - 1) ifTrue: [ pos setX: 15 setY: pos y ].
+	^ ((pos y*windowSize*flatPosScalingFactor) + (pos x*flatPosScalingFactor) + 1) rounded.
 ]
 
 { #category : #'as yet unclassified' }
@@ -92,7 +92,7 @@ MaGame >> getVisibleEntitiesAsFixedArray [
 	result := OrderedCollection new.
 	256 timesRepeat: [ result add: 0 ].
 	self getVisibleEntities do: [ :ent |
-		result at: (self getEntityFlatPos: ent) put: (ent code / 7 asFloat)
+		result at: (self getEntityFlatPos: ent) put: (ent code / 7.0)
 		 ].
 	^ result
 ]
@@ -197,6 +197,7 @@ MaGame >> run [
 
 	<script: 'self new run'>
 	| w |
+	canvas @ RSSimpleCanvasMonitorInteraction.
 	w := canvas open setLabel: 'Mario'.
 	w announcer
 		when: WindowClosed

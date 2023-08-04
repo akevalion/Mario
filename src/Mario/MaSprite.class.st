@@ -33,7 +33,7 @@ MaSprite class >> imgFor: aString [
 ]
 
 { #category : #'as yet unclassified' }
-MaSprite class >> paintFor: source position: position extent: extent [.
+MaSprite class >> paintFor: source position: position extent: extent [
 	paints ifNil: [ paints := Dictionary new ].
 	^ paints 
 		at: (source -> position)
@@ -41,7 +41,7 @@ MaSprite class >> paintFor: source position: position extent: extent [.
 			| img paint |
 			img := self imgFor: source. 
 			paint := AthensCairoPatternSurfacePaint createForSurface: img.
-			paint origin: (extent / -2) - position" -(0.5) ".
+			paint origin: (extent / -2.0) - position.
 			paint ].
 	
 ]
@@ -81,11 +81,11 @@ MaSprite >> positionX: int [
 { #category : #rendering }
 MaSprite >> renderOn: canvas position: point [ 
 	| paint box |
-	paint := self class paintFor: source position: position extent: extent.
+	paint := self class paintFor: source position: position traceCr extent: extent.
 	canvas add: (box := RSBox new
 		paint: paint;
 		size: extent;
-		position: point * 16;
+		position: point*16;
 		yourself).
 	^ box
 ]

@@ -45,7 +45,7 @@ MaLoader >> load: aString [
 { #category : #public }
 MaLoader >> reload [
 	| player level |
-	game canvas shapes removeAll.
+	game canvas shapes copy do: #remove.
 	player := self createMario.
 	game canvas propertyAt: #player put: player.
 	level := self createWorld.
